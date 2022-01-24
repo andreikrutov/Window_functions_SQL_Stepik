@@ -1,0 +1,14 @@
+/*
+Найти, сколько процентов составляет зарплата сотрудника от зарплатного фонда по городу
+ */
+select 
+	e.name,
+	e.city,
+	e.salary,
+	sum(e.salary) over w as fund,
+	round(cast(e.salary as decimal)/sum(e.salary) over w,3)*100 as percent
+from public.employees as e
+window w as (
+	partition by city 	
+)
+order by e.city, e.salary, e.id

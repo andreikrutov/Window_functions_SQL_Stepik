@@ -1,0 +1,14 @@
+/*
+Получить наибольшуюзарплату среди тех, у кого зарплата на 10-30 ниже
+*/
+select 
+id,
+name,
+salary,
+last_value(salary) over w as lower_sal
+
+from employees
+window w as (
+order by salary
+range between 30 preceding and 10 preceding
+)

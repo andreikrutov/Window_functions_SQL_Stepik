@@ -1,0 +1,12 @@
+/*
+ Для каждого сотрудника выведем предыдущую и следующую зарплаты
+*/
+select  
+	e.name, 
+	e.department,
+	lag(salary, 1) over w as prev,
+	e.salary,
+	lead(salary, 1) over w as "next"
+from public.employees as e
+window w as (order by salary)
+order by e.salary, e.id

@@ -1,0 +1,20 @@
+/*
+Выбрать самых высокооплачиваемых сотрудников по отделу
+*/
+--внешним selectом выберем тех,
+-- у кого рейтинг 1
+select *
+from
+--здесь ранжируем всех по отделам
+(
+select e.*,
+dense_rank() over w as r
+from employees as e
+window w as(
+partition by department
+order by salary desc)
+
+order by department, salary desc, id
+)
+where r=1
+limit 10

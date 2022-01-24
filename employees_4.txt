@@ -1,0 +1,17 @@
+/*
+Для каждого сотрудника определим, сколько процентов 
+составляет его зп от максимальной по городу
+*/
+select 
+	e.name,
+	e.city,
+	e.salary,
+	--((last_value(salary) over w)/e.salary*100) as "percent"
+	round(cast(e.salary as decimal)/(last_value(e.salary) over w),2)*100 as percent
+from public.employees as e
+window w as (
+	partition by city 
+	order by salary 
+	rows between unbounded preceding and unbounded following
+	)
+order by e.city, e.salary, e.id

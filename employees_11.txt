@@ -1,0 +1,14 @@
+/*
+Для каждого человека посчитаем количество сотрудников, 
+которые получают такую же или большую зарплату, но не более чем +10 тыс
+*/
+select 
+id,
+name,
+salary,
+count(*) over w as p10_cnt
+from employees
+window w as (
+order by salary
+range between current row and 10 following
+)

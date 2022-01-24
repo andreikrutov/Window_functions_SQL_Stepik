@@ -1,0 +1,14 @@
+/*
+Получить среднее за предыдущий месяц и текущий
+ */
+select 
+	e.year,
+	e.month,
+	e.income,
+	avg(income) over w as roll_avg
+from public.expenses as e
+window w as (
+	order by month
+	rows between 1 preceding and current row
+)
+order by e."month"

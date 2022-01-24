@@ -1,0 +1,16 @@
+/*
+ Необходимо разбить сотрудников на группы по городам,
+ а внутри кажой группы разбить по уровню зп
+ */
+
+select 
+	ntile(2) over w as tile,
+	name,
+	city,
+	salary
+from public.employees 
+window w as (
+	partition by city
+	order by salary
+)
+order by city, salary, id

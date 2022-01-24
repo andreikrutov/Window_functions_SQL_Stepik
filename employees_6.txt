@@ -1,0 +1,18 @@
+/*
+Определеить
+- сколько человек трудится в отделе (emp_cnt);
+- какая средняя зарплата по отделу (sal_avg);
+- на сколько процентов отклоняется его зарплата от средней по отделу (diff).
+*/
+select 
+	e.name,
+	e.department,
+	e.salary,
+	count(e.name) over w as emp_cnt,
+	round(avg(e.salary) over w,0) sal_avg,
+	round((e.salary - avg(e.salary) over w)*100/avg(e.salary) over w,0) as diff
+from public.employees as e
+window w as (
+	partition by department
+)
+order by e.department, e.salary, e.id

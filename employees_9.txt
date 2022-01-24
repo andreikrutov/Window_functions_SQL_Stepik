@@ -1,0 +1,16 @@
+/*
+Для каждого работника вывести количество работников,
+у которых такая же зп или больше. Сам работник тоже учитывается
+ */
+select 
+	e.id,
+	e.name,
+	e.salary,
+	e.department,
+	count(*) over w as ge_cnt
+from public.employees as e
+window w as (
+	order by salary desc
+	groups between unbounded preceding and current row
+)
+order by e.salary, e.id

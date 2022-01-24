@@ -1,0 +1,24 @@
+/*
+Напишите запрос, который для каждого сотрудника выведет:
+
+- размер з/п предыдущего по зарплате сотрудника (среди коллег по департаменту);
+- максимальную з/п по департаменту.
+ */
+select 
+	e.id,
+	e.name,
+	e.department,
+	e.salary,
+	first_value(salary) over w1 as prev_salary,
+	last_value(salary) over w2 as max_salary
+from public.employees as e
+window w1 as (
+	partition by department 
+	order by salary 
+	rows between 1 preceding and current row
+),
+w2 as (
+	partition by department 
+	order by salary 
+	rows between unbounded preceding and unbounded following
+)

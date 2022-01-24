@@ -1,0 +1,14 @@
+/*
+Для каждого сотрудника получим ближайшую бОльшую, чем у него, зарплату
+ */
+select 
+	e.id,
+	e.name,
+	e.salary,
+	first_value(salary) over w as next_salary
+from public.employees as e
+window w as (
+	order by salary 
+	groups between 1 following and unbounded following 
+)
+order by e.salary, e.id
