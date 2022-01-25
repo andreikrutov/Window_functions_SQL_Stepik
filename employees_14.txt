@@ -1,0 +1,15 @@
+/*
+Найдем процент, который составляет зарплата сотрудника от средней по городу.
+Сначала msk - без учета Самары, sam - без учета Москвы
+*/
+select
+  id, name, salary,
+  round(salary * 100 / avg(salary) over ()) as "perc",
+  round(salary *100/avg(salary) filter(where city <> 'Самара') over w,0) as msk,
+  round(salary *100/avg(salary) filter(where city <> 'Москва') over w,0) as sam
+from employees
+window w as (
+order by salary
+  rows between unbounded preceding and unbounded following
+)
+order by id

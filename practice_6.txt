@@ -1,0 +1,28 @@
+/*
+Разбейте месяцы 2020 года на три группы по выручке:
+
+tile = 1 — высокая,
+tile = 2 — средняя,
+tile = 3 — низкая.
+Результат отсортируйте по убыванию выручки.
+*/
+
+with data as (
+select 
+	s.year,
+	s.month,
+	sum(s.revenue) as revenue
+from public.sales as s
+where year = '2020'
+group by year, month
+)
+select 
+	year,
+	month,
+	revenue,
+	ntile(3) over w as tile
+from data
+window w as (
+	order by revenue desc
+	rows between unbounded preceding and unbounded following 
+)

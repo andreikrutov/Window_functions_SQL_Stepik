@@ -1,0 +1,16 @@
+/*
+Найти среднюю зарплату среди тех у кого зарплата такая же или выше 
+не более чем на +20,чем у текущего, исключая его самого
+*/
+select 
+id,
+name,
+salary,
+round(avg(salary) over w,0) as p20_sal
+
+from employees
+window w as (
+order by salary
+range between current row and 20 following
+exclude current row
+)

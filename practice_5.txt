@@ -1,0 +1,26 @@
+/*
+Посчитайте, какой вклад (в процентах) внес каждый из тарифов в общую выручку за год.
+
+Процент округлите до целого.
+*/
+with data as (
+select 
+	s.year,
+	s.plan,
+	sum(s.revenue) as revenue
+from public.sales as s
+group by year, plan
+order by year, plan
+)
+select 
+	year,
+	plan,
+	revenue,
+	sum(revenue) over w as total,
+	round(revenue*100/sum(revenue) over w ,0) as perc
+from data
+window w as (
+	partition by year
+	order by plan
+	rows between unbounded preceding and unbounded following 
+)

@@ -1,0 +1,24 @@
+/*
+Посчитайте выручку для тарифа gold по месяцам 2020 года. Для каждого месяца дополнительно укажите:
+
+выручку за предыдущий месяц (prev);
+процент, который составляет выручка текущего месяца от prev (perc).
+Процент округлите до целого.
+*/
+with data as (
+select 
+	'2020' as year,
+	s.month,
+	sum(s.revenue) as revenue
+from public.sales as s
+where s.year = '2020' and s.plan = 'gold'
+group by month
+order by month
+)
+select 
+	year,
+	month,
+	revenue,
+	lag(revenue,1) over () as prev,
+	round(revenue*100/lag(revenue,1) over (),0) as perc
+from data

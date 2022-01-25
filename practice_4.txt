@@ -1,0 +1,28 @@
+/*
+Посчитайте выручку по месяцам для тарифа silver. Для каждого месяца дополнительно укажите:
+
+выручку за декабрь этого же года (december);
+процент, который составляет выручка текущего месяца от december (perc).
+Процент округлите до целого.
+*/
+with data as (
+	select 
+		s.year,
+		s.month,
+		s.revenue
+	from public.sales as s
+	where plan = 'silver'
+	order by year, month
+)
+select 
+	year,
+	month,
+	revenue,
+	last_value(revenue) over w as december,
+	round(revenue *100/ last_value(revenue) over w,0) as perc
+from data
+window w as (
+	partition by "year" 
+	order by "month" 
+	rows between unbounded preceding and unbounded following 
+)

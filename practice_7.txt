@@ -1,0 +1,27 @@
+/*
+Посчитайте выручку по кварталам 2020 года. Для каждого квартала дополнительно укажите:
+
+выручку за аналогичный квартал 2019 года (prev);
+процент, который составляет выручка текущего квартала от prev (perc).
+Процент округлите до целого.
+*/
+with data as (
+select 
+	s.year,
+	s.quarter,
+	sum(s.revenue) as revenue
+from public.sales as s
+group by year, quarter
+order by year desc, quarter
+)
+select 
+	year,
+	quarter,
+	revenue,
+	lead(revenue, 4) over w as prev,
+	round(revenue *100 / lead(revenue, 4) over w,0) as perc
+from data 
+window w as (
+	order by year desc, quarter
+)
+limit 4

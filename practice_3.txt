@@ -1,0 +1,22 @@
+/*
+Найти скользящее среднее по 3 соседним, для тарифа platinum
+*/
+with data as (
+	select 
+		s.year,
+		s.month,
+		s.revenue
+	from public.sales as s
+	where year = '2020' and plan = 'platinum'
+	order by month
+)
+select 
+	year,
+	month,
+	revenue,
+	round(avg(revenue) over w,0) as avg3m
+from data 
+window w as (
+	order by "month" 
+	rows between 1 preceding and 1 following 
+)

@@ -1,0 +1,24 @@
+/*
+Посчитайте выручку нарастающим итогом по каждому тарифному плану за первые три месяца 2020 года.
+*/
+with data as (
+	select 
+		s.plan,
+		s.year,
+		s.month,
+		s.revenue
+	from public.sales as s
+	where year = '2020' and month in (1,2,3)
+	order by plan, month
+)
+select 
+	plan,
+	year,
+	month,
+	sum(revenue) over w as total
+from data 
+window w as (
+	partition by plan 
+	order by "month" 
+	rows between unbounded preceding and current row
+)
